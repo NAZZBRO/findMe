@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recon Tool</title>
+</head>
+<body bgcolor="black" text="white">
+    <h2>Recon Tool</h2>
+    
+    <!--IP Address Input-->  
+    <label for="ipInput">IP Address:</label>
+    <input type="text" id="ipInput" placeholder="Enter IP">
+    <button onclick="fetchIP()">Search IP</button>
+    <br><br>
+    
+
+    <!-- Domain Name Input -->
+    <label for="domainInput">Domain Name:</label>
+    <input type="text" id="domainInput" placeholder="Enter Domain">
+    <button onclick="fetchDomain()">Search Domain</button>
+    <br><br>
+    
+    <!-- Phone Number Input -->
+    <label for="phoneInput">Phone Number:</label>
+    <input type="text" id="phoneInput" placeholder="Enter Phone">
+    <button onclick="fetchPhone()">Search Phone</button>
+    <br><br>
+    
+    <!-- URL Input -->
+    <label for="urlInput">URL:</label>
+    <input type="text" id="urlInput" placeholder="Enter URL">
+    <button onclick="fetchURL()">Search URL</button>
+    <br><br>
+    
+    <!-- Result Display 
+    <pre id="result"></pre>-->
+    <pre id="result"></pre>
+    <script>
+
+
+
+        document.getElementById("ipInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevents form submission (if inside a form)
+                fetchIP();
+            }
+        });
+
+
+        document.getElementById("domainInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevents form submission (if inside a form)
+                fetchDomain();
+            }
+        });
+
+
+        document.getElementById("phoneInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevents form submission (if inside a form)
+                fetchPhone();
+            }
+        });
+
+
+        document.getElementById("urlInput").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Prevents form submission (if inside a form)
+                fetchURL();
+            }
+        });
+
+
+        async function fetchData(apiUrl) {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                document.getElementById("result").innerText = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById("result").innerText = "Error fetching data";
+            }
+        }
+        const VIRUSTOTAL_API_KEY = process.env.VIRUSTOTAL_API_KEY;
+        function fetchIP() {
+            const ip = document.getElementById("ipInput").value.trim();
+            if (ip) {
+                
+                fetchData(`http://localhost:5000/ip/${ip}`);
+            } else {
+                alert("Please enter a valid IP address.");
+            }
+        }
+    
+        function fetchDomain() {
+            const domain = document.getElementById("domainInput").value.trim();
+            if (domain) {
+                fetchData(`http://localhost:5000/whois/${domain}`);
+            } else {
+                alert("Please enter a valid domain name.");
+            }
+        }
+    
+        function fetchPhone() {
+            const phone = document.getElementById("phoneInput").value.trim();
+            if (phone) {
+                fetchData(`http://localhost:5000/phone/${phone}`);
+            } else {
+                alert("Please enter a valid phone number.");
+            }
+        }
+    
+        function fetchURL() {
+            const url = document.getElementById("urlInput").value.trim();
+            if (url) {
+                fetchData(`http://localhost:5000/scan/${encodeURIComponent(url)}`);
+            } else {
+                alert("Please enter a valid URL.");
+            }
+        }
+    </script>
+    
+    
+</body>
+</html>
